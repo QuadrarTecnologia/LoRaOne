@@ -1,0 +1,74 @@
+// Esse Script deve ser inserido na aba Payload Parser, no device criado na Tago
+
+// Add ignorable variables in this array.
+const ignore_vars = [];
+
+/**
+ * This is the main function to parse the payload. Everything else doesn't require your attention.
+ * @param {String} payload_raw 
+ * @returns {Object} containing key and value to TagoIO
+ */
+function parsePayload(payload_raw) {
+  try {
+    // If your device is sending something different than hex, like base64, just specify it bellow.
+    const buffer = Buffer.from(payload_raw, 'hex');
+    const bufferSize = buffer.length;
+    
+    // More information about buffers can be found here: https://nodejs.org/api/buffer.html
+    if(buffer[0] == 0x30)
+    {
+      const data = [
+        { variable: 'protocol_id', value: buffer.toString('utf8', 0, 1) },
+        { variable: 'lat',    value: buffer.toString('utf8', 1, bufferSize), unit: '' },
+      ];
+      return data;
+    }
+
+    if(buffer[0] == 0x31)
+    {
+      const data = [
+        { variable: 'protocol_id', value: buffer.toString('utf8', 0, 1) },
+        { variable: 'long',    value: buffer.toString('utf8', 1, bufferSize), unit: '' },
+      ];
+      return data;
+    }
+
+    if(buffer[0] == 0x32)
+    {
+      const data = [
+        { variable: 'protocol_id', value: buffer.toString('utf8', 0, 1) },
+        { variable: 'temp',    value: buffer.toString('utf8', 1, bufferSize), unit: 'C' },
+      ];
+      return data;
+    }
+    if(buffer[0] == 0x39 && buffer[1] == 0x39)
+    {
+          const data = [
+        { variable: 'protocol_id', value: buffer.toString('utf8', 0, 2) },
+      ];
+      return data;
+    }
+    return;
+
+  } catch (e) {
+    console.log(e);
+    // Return the variable parse_error for debugging.
+    return [{ variable: 'parse_error', value: e.message }];
+  }
+}
+
+// Remove unwanted variables.
+payload = payload.filter(x => !ignore_vars.includes(x.variable));
+
+// Payload is an environment variable. Is where what is being inserted to your device comes in.
+// Payload always is an array of objects. [ { variable, value...}, {variable, value...} ...]
+const payload_raw = payload.find(x => x.variable === 'payload_raw' || x.variable === 'payload' || x.variable === 'data');
+if (payload_raw) {
+  // Get a unique serie for the incoming data.
+  const { value, serie, time } = payload_raw;
+
+  // Parse the payload_raw to JSON format (it comes in a String format)
+  if (value) {
+    payload = payload.concat(parsePayload(value).map(x => ({ ...x, serie, time: x.time || time })));
+  }
+}
