@@ -25,6 +25,8 @@ This repository is arranged by sub folders:
 
 * Conheça a Quadrar LoRaONE DevBoard : https://www.embarcados.com.br/quadrar-loraone-devboard/
 
+* Webinar gravado para o Embarcados: Aplicando a LoRaONE DevBoard nos seus projetos de IoT: https://www.embarcados.com.br/webinars/webinar-aplicando-a-loraone-devboard-nos-seus-projetos-de-iot/
+
 ## Who do I talk to? ##
 
 * Quadrar Tecnologia 	- contato@quadrar.com.br
