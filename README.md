@@ -27,7 +27,6 @@ This repository is arranged by sub folders:
 
 ## Who do I talk to? ##
 
-* Airton Toyofuku 		- ayt@quadrar.com.br
 * Quadrar Tecnologia 	- contato@quadrar.com.br
 
 
